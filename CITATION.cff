@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this toolkit, please cite it as below, and see README.md for citing IMGT/GENE-DB as the underlying data source."
+title: "IMGT Antibody Germline Cross-Species Comparison Toolkit"
+type: software
+authors:
+  - name: Rami Musharrafieh
+repository-code: "[YOUR GITHUB URL HERE]"
+license: MIT
+version: 0.1.0
+date-released: "2026-08-31"
