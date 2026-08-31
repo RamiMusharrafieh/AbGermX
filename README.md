@@ -5,11 +5,11 @@ IMGT/GENE-DB bulk FASTA export
 
 This toolkit covers several related analyses:
 
-1. **Pairwise species/locus/gene-type comparison** — identity clustermaps, best-ortholog tables (`workflow.py`)
-2. **FR/CDR annotation** — splits V genes into framework/CDR regions with biophysical properties (`annotate_regions.py`, `build_annotation_table.py`)
-3. **Cross-species clustering (PCA/t-SNE)** — visualizes how species group by CDR/framework biochemistry (`run_dimred.py`)
-4. **Query sequence comparison** — projects an arbitrary antibody loop (e.g. a computationally designed binder) onto the natural cross-species feature space (`compare_query_to_species.py`)
-5. **Stochastic HCDR3 simulation** — simulates V(D)J recombination per species from germline genes to explore CDR3 diversity (`vdj_recombination.py`, `run_vdj_simulation.py`)
+1. **Pairwise species/locus/gene-type comparison** identity clustermaps, best-ortholog tables (`workflow.py`)
+2. **FR/CDR annotation** splits V genes into framework/CDR regions with biophysical properties (`annotate_regions.py`, `build_annotation_table.py`)
+3. **Cross-species clustering (PCA/t-SNE)** visualizes how species group by CDR/framework biochemistry (`run_dimred.py`)
+4. **Query sequence comparison** projects an arbitrary antibody loop (e.g. a computationally designed binder) onto the natural cross-species feature space (`compare_query_to_species.py`)
+5. **Stochastic HCDR3 simulation** simulates V(D)J recombination per species from germline genes to explore CDR3 diversity (`vdj_recombination.py`, `run_vdj_simulation.py`)
 
 See the [`examples/`](examples/) folder for sample output images.
 
@@ -39,16 +39,16 @@ python3 list_species.py
 
 ## Options
 
-**Species** — common name (human, mouse, macaque, rabbit, cow, ...) or IMGT
+**Species** common name (human, mouse, macaque, rabbit, cow, ...) or IMGT
 scientific name, exact/partial matched against what's actually in your
 file. Unresolvable names print the full species list so you can pick a valid
 one. Some common names are ambiguous (e.g. "macaque" = several real species);
 see `species_aliases.py` to see/adjust the defaults.
 
-**Chain** — `heavy` (IGH) | `kappa` (IGK) | `lambda` (IGL) | `light` (runs
+**Chain** `heavy` (IGH) | `kappa` (IGK) | `lambda` (IGL) | `light` (runs
 kappa AND lambda as two separate outputs)
 
-**Gene type** — `V` | `D` | `J` | `C`. V/D/J use IMGT's single-exon region
+**Gene type** `V` | `D` | `J` | `C`. V/D/J use IMGT's single-exon region
 labels directly. `C` (constant region) is straightforward for kappa/lambda
 (single C-REGION exon) but heavy-chain constant genes span multiple exons
 (CH1, hinge, CH2, CH3...). as a simplification, heavy-chain `C` comparisons
@@ -56,12 +56,12 @@ use the CH1 exon as a proxy rather than the full multi-domain constant region.
 
 ## What it produces (per locus, in the output directory)
 
-- `<a>_vs_<b>_<locus>_<gene>_identity_matrix.csv` — full pairwise %identity
+- `<a>_vs_<b>_<locus>_<gene>_identity_matrix.csv` full pairwise %identity
   matrix (Needleman-Wunsch global alignment, one representative functional
   allele per gene)
-- `<a>_vs_<b>_<locus>_<gene>_best_orthologs.csv` — each species-A gene's best
+- `<a>_vs_<b>_<locus>_<gene>_best_orthologs.csv` each species-A gene's best
   species-B match and %identity
-- `<a>_vs_<b>_<locus>_<gene>_clustermap.png` — hierarchically clustered
+- `<a>_vs_<b>_<locus>_<gene>_clustermap.png` hierarchically clustered
   identity heatmap
 
 Console output also prints repertoire size and functionality (Functional /
