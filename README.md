@@ -1,8 +1,7 @@
 # Antibody Germline Cross-Species Comparison Tool
 
 Compares immunoglobulin (IG) germline genes between species in an
-IMGT/GENE-DB bulk FASTA export. **TCR loci (TRA/TRB/TRG/TRD) are excluded
-entirely** — only antibody genes (IGH, IGK, IGL) are loaded and analyzed.
+IMGT/GENE-DB bulk FASTA export
 
 This toolkit covers several related analyses:
 
