@@ -27,8 +27,6 @@ python3 workflow.py --query "macaque vs mouse, heavy chain, V genes" \
     --bulk_path /path/to/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F+ORF+inframeP
 ```
 
-## Quick start
-
 ```bash
 # Freeform query
 python3 workflow.py --query "macaque vs mouse, heavy chain, V genes"
