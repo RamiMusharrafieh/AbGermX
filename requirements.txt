@@ -5,7 +5,9 @@ matplotlib>=3.8
 seaborn>=0.13
 scikit-learn>=1.4
 
-# Optional, not required by any script here but a natural drop-in swap for the
-# t-SNE calls in run_dimred.py / run_dimred_cdr_only.py / compare_query_to_species.py
-# if you want to compare against UMAP:
+# Optional extras, not imported by anything here:
+#   fastcluster  - speeds up the clustermap linkage on large identity matrices
+#   umap-learn   - a drop-in swap for the TSNE calls in run_dimred.py,
+#                  run_dimred_cdr_only.py and compare_query_to_species.py
+# fastcluster>=1.2
 # umap-learn>=0.5

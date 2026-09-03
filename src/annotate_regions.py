@@ -22,8 +22,8 @@ CDR1_END_NOMINAL = 38
 FR2_END_NOMINAL = 55
 CDR2_END_NOMINAL = 65
 FR3_END_NOMINAL = 104
-FR2_WIDTH = FR2_END_NOMINAL - CDR1_END_NOMINAL      # 17, fixed -- never has insertions
-FR3_WIDTH = FR3_END_NOMINAL - CDR2_END_NOMINAL      # 39, fixed -- never has insertions
+FR2_WIDTH = FR2_END_NOMINAL - CDR1_END_NOMINAL      # 17, fixed width; never has insertions
+FR3_WIDTH = FR3_END_NOMINAL - CDR2_END_NOMINAL      # 39, fixed width; never has insertions
 TRP_NOMINAL = 41       # 3rd residue of FR2 in the conserved germline motif
 CYS104_NOMINAL = 104   # last residue of FR3
 
@@ -100,7 +100,10 @@ def annotate_sequence(seq):
     fr3 = _slice(seq, fr3_start, fr3_end)
     cdr3_partial = seq[fr3_end:] if len(seq) > fr3_end else ''
 
-    qc_pass = anchor_trp41_ok or (trp_pos is not None)   # trp located (possibly shifted) AND
+    # QC passes when both downstream anchors were located at all, shifted or
+    # not: a shifted anchor is an insertion the slicing above already absorbed,
+    # whereas a missing one means the sequence is truncated and the FR/CDR
+    # boundaries after that point are guesses.
     qc_pass = (trp_pos is not None) and (cys104_pos is not None)
 
     return Annotation(

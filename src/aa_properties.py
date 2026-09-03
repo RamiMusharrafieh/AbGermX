@@ -8,6 +8,7 @@ hydrophobic. Reported as the mean over the residues in a region.
 Aromatic residues: Phe (F), Trp (W), Tyr (Y)
 
 Polar (uncharged) residues: Ser (S), Thr (T), Asn (N), Gln (Q), Cys (C), Tyr (Y)
+"""
 
 KYTE_DOOLITTLE = {
     'A': 1.8, 'R': -4.5, 'N': -3.5, 'D': -3.5, 'C': 2.5,

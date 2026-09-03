@@ -1,21 +1,32 @@
 #!/usr/bin/env python3
-"""List all species available in the bulk IMGT file, with antibody (IG) gene record
-counts and loci present. TCR loci are excluded and this tool only covers IGH/IGK/IGL."""
-import sys
+"""
+Lists every species available in an IMGT/GENE-DB bulk file, with antibody (IG)
+gene record counts per locus. TCR loci are excluded: this toolkit covers
+IGH/IGK/IGL only.
+"""
+import argparse
 from collections import defaultdict
+
+import _bootstrap  # noqa: F401  (puts ../src on sys.path)
+from config import DEFAULT_AA_BULK
 from imgt_parser import parse_bulk_fasta
 
-DEFAULT_BULK = '/mnt/user-data/uploads/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F_ORF_inframeP'
 
 def main():
-    bulk_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_BULK
-    records = parse_bulk_fasta(bulk_path)
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('bulk_path', nargs='?', default=DEFAULT_AA_BULK,
+                   help='Path to IMGT/GENE-DB bulk FASTA (default: data/ copy)')
+    args = p.parse_args()
+
+    records = parse_bulk_fasta(args.bulk_path)
     by_species = defaultdict(lambda: defaultdict(int))
     for r in records:
         by_species[r['species']][r['locus']] += 1
     for sp in sorted(by_species, key=lambda s: -sum(by_species[s].values())):
-        loci = ', '.join(f'{l}:{c}' for l, c in sorted(by_species[sp].items(), key=lambda x:-x[1]))
+        loci = ', '.join(f'{locus}:{count}'
+                         for locus, count in sorted(by_species[sp].items(), key=lambda x: -x[1]))
         print(f'{sp:35s} {loci}')
+
 
 if __name__ == '__main__':
     main()

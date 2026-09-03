@@ -50,7 +50,7 @@ ALIASES = {
     'baboon': 'Papio anubis anubis',
     'olive baboon': 'Papio anubis anubis',
     'sooty mangabey': 'Cercocebus atys',
-    # macaques -- several species share the common name "macaque"
+    # macaques: several species share the common name "macaque"
     'macaque': 'Macaca mulatta',              # default: rhesus
     'rhesus macaque': 'Macaca mulatta',
     'rhesus': 'Macaca mulatta',
