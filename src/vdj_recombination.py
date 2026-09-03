@@ -5,20 +5,21 @@ Combines, per species: the germline-encoded V-gene CDR3 stub (from the 2nd-Cys
 onward), a D gene (in whatever reading frame emerges from random 5'/3' trimming
 -- not a forced "frame 1/2/3" choice, since real frame is determined by total
 nucleotide count, not gene identity), and a J gene's CDR3-contributing prefix
-(up to the conserved FR4 WG.G motif) -- with random exonuclease trimming at each
+(up to the conserved FR4 WG.G motif), with random exonuclease trimming at each
 junction and random N-nucleotide insertion (TdT-like) between segments.
 
 This models the COMBINATORIAL + rough JUNCTIONAL diversity ceiling of germline
 HCDR3 generation. It is a simplified illustrative model, not a validated
-biophysical simulation of real recombination -- see caveats in generate_hcdr3s().
+biophysical simulation of real recombination; see the caveats in generate_hcdr3s().
 """
 import re
-import random
-from collections import defaultdict
+
 from imgt_parser import norm_functionality
 from annotate_regions import annotate_sequence
 
-FR4_MOTIF = re.compile(r'TGG(?:GG[ACGT]|[ACGT]G[ACGT])GG[ACGT]GG[ACGT]', re.IGNORECASE)  # not used; AA-level motif used instead
+# The FR4 boundary is located on the amino-acid sequence and the position is
+# converted to a nucleotide offset, rather than matching a degenerate motif on
+# the nucleotide sequence directly.
 FR4_AA_MOTIF = re.compile(r'WG.G')
 
 CODON_TABLE = {
@@ -48,7 +49,7 @@ def translate_dna(nt_seq):
 def build_species_vdj_pools(aa_records, nt_records, species, locus='IGH'):
     """
     Returns dict(v_tails, d_segments, j_prefixes) of (gene_name, nt_sequence) lists
-    -- the germline nucleotide material each gene type contributes to a CDR3 junction.
+    the germline nucleotide material each gene type contributes to a CDR3 junction.
     """
     aa_by_key = {(r['gene_allele'], r['species']): r for r in aa_records if r['locus']==locus}
     nt_by_key = {(r['gene_allele'], r['species']): r for r in nt_records if r['locus']==locus}
@@ -70,13 +71,11 @@ def build_species_vdj_pools(aa_records, nt_records, species, locus='IGH'):
         ann = annotate_sequence(r['seq'])
         if not ann.fr3:
             continue
-        fr3_end_aa_col = len(ann.fr1) + len(ann.cdr1) + len(ann.fr2) + len(ann.cdr2) + len(ann.fr3)
-        # fr3_end_aa_col counts *gapped* columns consumed so far only if slices came from
-        # the gapped string in order -- recompute directly from the gapped seq length instead:
-        gapped = r['seq']
-        # locate fr3 end by finding fr3 substring's end position in the gapped AA seq
-        idx = gapped.find(ann.fr3)
-        if idx == -1 or not ann.fr3:
+        # The V-gene contribution to CDR3 starts where FR3 ends. Locate that
+        # column in the gapped AA sequence directly: summing the slice lengths
+        # would be wrong wherever an insertion shifted the boundaries.
+        idx = r['seq'].find(ann.fr3)
+        if idx == -1:
             continue
         fr3_end_aa_col = idx + len(ann.fr3)
         nt_tail = nt_r['seq'][fr3_end_aa_col*3:].replace('.', '')
@@ -150,7 +149,7 @@ def generate_hcdr3s(pools, n_target, rng, max_attempts_factor=6, **kwargs):
       show strong, unequal gene usage biases (some V/D/J genes are used far more
       than others).
     - No modeling of P-nucleotides (palindromic additions at trimmed ends).
-    - No selection beyond "no premature stop codon" -- real repertoires undergo
+    - No selection beyond "no premature stop codon". Real repertoires undergo
       further selection (structural viability, self-tolerance, antigen selection)
       not modeled here.
     """

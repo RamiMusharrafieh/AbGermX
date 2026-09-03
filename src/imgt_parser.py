@@ -5,7 +5,7 @@ Works on the standard 15-field pipe-delimited IMGT header format.
 import re
 from collections import defaultdict
 
-IG_LOCI = {'IGH', 'IGK', 'IGL'}  # antibody (immunoglobulin) loci only -- TR* and IGI excluded
+IG_LOCI = {'IGH', 'IGK', 'IGL'}  # antibody (immunoglobulin) loci only; TR* and IGI excluded
 
 def parse_bulk_fasta(path, region_filter=None, ig_only=True):
     """
@@ -41,9 +41,8 @@ def parse_bulk_fasta(path, region_filter=None, ig_only=True):
                 return
             species = species_full.split('_')[0]
             strain = species_full[len(species):].lstrip('_') if '_' in species_full else ''
-            subgroup_m = re.match(r'((?:IG[HKL]|TR[ABGD]|IGI)V?\d*)', gene)
-            subgroup_m2 = re.match(r'([A-Z]+\d+)', gene)
-            subgroup = subgroup_m2.group(1) if subgroup_m2 else gene
+            subgroup_m = re.match(r'([A-Z]+\d+)', gene)
+            subgroup = subgroup_m.group(1) if subgroup_m else gene
             seq = ''.join(seq_lines)
             records.append(dict(
                 acc=acc, gene_allele=gene_allele, gene=gene, allele=allele,
@@ -81,7 +80,8 @@ def list_species(records):
 
 if __name__ == '__main__':
     import sys
-    path = sys.argv[1] if len(sys.argv) > 1 else '/mnt/user-data/uploads/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F_ORF_inframeP'
+    from config import DEFAULT_AA_BULK
+    path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_AA_BULK
     recs = parse_bulk_fasta(path)
-    print(f'Parsed {len(recs)} V-REGION records')
+    print(f'Parsed {len(recs)} IG gene records')
     print('Species:', list_species(recs))

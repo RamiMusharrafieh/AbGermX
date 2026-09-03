@@ -58,7 +58,8 @@ def build_feature_matrix(annotation_df):
 if __name__ == '__main__':
     from imgt_parser import parse_bulk_fasta
     from build_annotation_table import build_table
-    records = parse_bulk_fasta('/mnt/user-data/uploads/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F_ORF_inframeP')
+    from config import DEFAULT_AA_BULK
+    records = parse_bulk_fasta(DEFAULT_AA_BULK)
     ann = build_table(records, locus='IGH', species_list=None, functional_only=True, allele_scope='representative')
     ann = ann[ann.qc_pass]  # drop QC-failed (partial) sequences for cleaner features
     feat, meta = build_feature_matrix(ann)

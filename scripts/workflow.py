@@ -4,10 +4,10 @@ IMGT antibody (IG) germline gene cross-species comparison workflow.
 this tool only covers IGH/IGK/IGL.
 
 USAGE (structured):
-    python3 workflow.py --species_a "macaque" --species_b "mouse" --chain heavy --gene V
+    python3 scripts/workflow.py --species_a "macaque" --species_b "mouse" --chain heavy --gene V
 
 USAGE (freeform):
-    python3 workflow.py --query "macaque vs mouse, heavy chain, V genes"
+    python3 scripts/workflow.py --query "macaque vs mouse, heavy chain, V genes"
 
 Chain options:  heavy, kappa, lambda, light (light = runs kappa AND lambda)
 Gene options:   V, D, J, C   (C = constant region; light-chain C-REGION is used
@@ -16,16 +16,16 @@ Gene options:   V, D, J, C   (C = constant region; light-chain C-REGION is used
 
 Species names accept common names (human, mouse, macaque, rabbit, ...) or
 exact/partial IMGT scientific names, with fuzzy-match fallback.
-Run `python3 list_species.py` to see everything available in your bulk file.
+Run `python3 scripts/list_species.py` to see everything available in your bulk file.
 """
 import argparse
 import sys
+
+import _bootstrap  # noqa: F401  (puts ../src on sys.path)
+from config import DEFAULT_AA_BULK, ensure_out_dir
 from imgt_parser import parse_bulk_fasta
 from query_resolver import resolve_query, parse_freeform_query, QueryError
 from run_comparison import compare_two_species
-
-DEFAULT_BULK = '/mnt/user-data/uploads/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F_ORF_inframeP'
-DEFAULT_OUT = '/mnt/user-data/outputs'
 
 def build_argparser():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -34,13 +34,14 @@ def build_argparser():
     p.add_argument('--species_b', help='Second species (common or scientific name)')
     p.add_argument('--chain', default='heavy', help='heavy | kappa | lambda | light (default: heavy)')
     p.add_argument('--gene', default='V', help='V | D | J | C (default: V)')
-    p.add_argument('--bulk_path', default=DEFAULT_BULK, help='Path to IMGT/GENE-DB bulk FASTA file')
-    p.add_argument('--out_dir', default=DEFAULT_OUT, help='Output directory')
+    p.add_argument('--bulk_path', default=DEFAULT_AA_BULK, help='Path to IMGT/GENE-DB bulk FASTA file')
+    p.add_argument('--out_dir', default=None, help='Output directory (default: outputs/)')
     return p
 
-def run(species_a_raw, species_b_raw, chain_raw, gene_raw, bulk_path, out_dir):
+def run(species_a_raw, species_b_raw, chain_raw, gene_raw, bulk_path, out_dir=None):
+    out_dir = ensure_out_dir(out_dir)
     print(f'Loading {bulk_path} ...')
-    records = parse_bulk_fasta(bulk_path)  # ig_only=True by default -- TCR excluded
+    records = parse_bulk_fasta(bulk_path)  # ig_only=True by default, so TCR loci are excluded
     print(f'Loaded {len(records)} antibody (IG) gene records (V/D/J/C, all functionality classes).')
 
     available_species = sorted(set(r['species'] for r in records))

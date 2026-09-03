@@ -35,8 +35,8 @@ Two files are used by this toolkit:
 
 | File pattern | Used for |
 |---|---|
-| `IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F+ORF+inframeP` | Everything except the VDJ recombination simulator -- V/D/J/C gene comparison, FR/CDR annotation, dimensionality reduction |
-| `IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP` | The VDJ recombination simulator (`vdj_recombination.py`, `run_vdj_simulation.py`) -- needs nucleotide sequence to translate D genes in multiple reading frames |
+| `IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F+ORF+inframeP` | Everything except the VDJ recombination simulator: V/D/J/C gene comparison, FR/CDR annotation, dimensionality reduction |
+| `IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP` | The VDJ recombination simulator (`vdj_recombination.py`, `run_vdj_simulation.py`); needs nucleotide sequence to translate D genes in multiple reading frames |
 
 Download whichever you need, then either:
 - pass the path explicitly: `python3 workflow.py --query "..." --bulk_path /path/to/file`, or
