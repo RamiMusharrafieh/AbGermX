@@ -2,7 +2,10 @@
 Builds a CSV of FR1/CDR1/FR2/CDR2/FR3/(partial-CDR3) annotations for antibody
 heavy-chain (or any locus) V genes, across one or more species.
 """
+from collections import defaultdict
+
 import pandas as pd
+
 from imgt_parser import parse_bulk_fasta, norm_functionality
 from annotate_regions import annotate_sequence
 from aa_properties import mean_hydrophobicity, count_aromatic, count_polar
@@ -18,7 +21,6 @@ def build_table(records, locus='IGH', species_list=None, functional_only=True, a
         recs = [r for r in recs if norm_functionality(r['functionality']) == 'Functional']
 
     if allele_scope == 'representative':
-        from collections import defaultdict
         by_gene = defaultdict(list)
         for r in recs:
             by_gene[(r['species'], r['gene'])].append(r)
@@ -58,7 +60,8 @@ def build_table(records, locus='IGH', species_list=None, functional_only=True, a
 
 if __name__ == '__main__':
     import sys
-    bulk_path = sys.argv[1] if len(sys.argv) > 1 else '/mnt/user-data/uploads/IMGTGENEDB-ReferenceSequences.fasta-AA-WithGaps-F_ORF_inframeP'
+    from config import DEFAULT_AA_BULK
+    bulk_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_AA_BULK
     records = parse_bulk_fasta(bulk_path)
     df = build_table(records, locus='IGH', species_list=['Homo sapiens'], functional_only=True, allele_scope='all')
     print(df.shape)
